@@ -140,12 +140,10 @@ function addToQueue(btn, typeName) {
 	calculateTypes(typeQueue);
 }
 
-function includesMultiple(array, toSearch) {
-	return array.indexOf(toSearch) !== array.lastIndexOf(toSearch);
-}
 
 //take the strings from an array containing type names to create results obj
 function calculateTypes(typeArray) {
+
 	let results = {
 		extraEffective: [],
 		effective: [],
@@ -167,6 +165,10 @@ function calculateTypes(typeArray) {
 	console.log("weak: " + combinedWeaknesses);
 	console.log("resist: " + combinedResistances);
 	console.log("immune: " + combinedImmunities);
+
+	const includesMultiple = (array, toSearch) => {
+		return array.indexOf(toSearch) !== array.lastIndexOf(toSearch);
+	}
 
 	//iterate through all type strings that exist and sort each type into one of the obj keys
 	for (let type in types) {
@@ -196,7 +198,32 @@ function calculateTypes(typeArray) {
 		}
 	}
 
-	console.log(results);
+	fillResultsPage(results);
+}
+
+function fillResultsPage(results) {
+	//clear all previous results
+	document.querySelectorAll(".resultElement").forEach(e => e.remove());
+
+	const createResultElement = (type) => {
+		const element = document.createElement("div");
+		element.innerText = type;
+		element.style.setProperty("--typeColor", types[type].color);
+		element.classList.add("resultElement");
+		return element;
+	}
+
+	for (let result in results) {
+		const resultDiv = document.querySelector("#" + result);
+		const headerTag = resultDiv.previousElementSibling;
+		headerTag.style.display = "none";//hide until we fill with elements
+
+		results[result].forEach((type) => {
+			headerTag.style.display = "block";
+			const newElement = createResultElement(type);
+			resultDiv.appendChild(newElement);
+		});
+	}
 }
 
 //create buttons of each available type
@@ -216,3 +243,6 @@ for (let type in types) {
 	btn.style.setProperty("--typeColor", types[type].color);
 	container.appendChild(btn);
 }
+
+//show neutral results at the start
+calculateTypes([]);

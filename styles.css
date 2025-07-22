@@ -11,7 +11,7 @@
 
 body {
 	min-height: 100vh;
-	background-image: linear-gradient(white, white, lightcoral);
+	background-image: linear-gradient(white, white, lightpink);
 	font-family: Arial, sans-serif;
 
 	display: flex;
@@ -26,7 +26,6 @@ header {
 	background-size: cover;
 	background-position: center;
 	padding: 30px;
-	margin-bottom: 15px;
 }
 
 header > h1 {
@@ -35,17 +34,23 @@ header > h1 {
 	text-shadow: 0 0 6px black;
 	text-align: center;
 }
- main {
+
+main {
 	display: grid;
-	place-content: center;
-	grid-template-columns: 100%;
+	padding: 10px 20px;
+	gap: 30px;
+	margin-left: auto;
+	margin-right: auto;
+	grid-template-columns: auto;
 	/* fill all the extra space in the page to be part of main */
 	flex-grow: 1;
- }
+}
 
 #buttons {
-	display: flex;
-	flex-wrap: wrap;
+	margin-top: 11px;
+	display: grid;
+	flex-direction: column;
+  grid-template-columns: auto auto;
 	gap: 0.3rem;
 	justify-content: center;
 }
@@ -98,9 +103,45 @@ header > h1 {
 	justify-self: left;
 }
 
+#results {
+	display: flex;
+	flex-direction: column;
+}
+
+#results > div {
+	display: grid;
+	flex-direction: column;
+  grid-template-columns: auto auto auto auto;
+	gap: 0.3rem;
+	justify-content: left;
+}
+
+#results > h3 {
+	font-size: 1.2rem;
+	color: dimgray;
+	margin-top: 10px;
+	margin-bottom: 5px;
+}
+
+.resultElement {
+	background-color: var(--typeColor);
+	color: var(--basicColor);
+	text-shadow: 1px 0 3px black;
+	display: inline-block;
+	width: 75px;
+	padding: 8px;
+	border-radius: 2px;
+	text-align: center;
+	font-size: 1.1rem;
+}
+
 /* split the content in half with a medium screen */
 @media screen and (min-width: 768px) {
 	main {
-		grid-template-columns: 50% 50%;
+		grid-template-columns: auto auto;
+		gap: 8vw;
+	}
+	#buttons {
+		grid-template-columns: auto auto auto;
 	}
 }
