@@ -136,7 +136,7 @@ function addToQueue(btn, typeName) {
 			btnQueue.shift();//take out first element in array
 		}
 	}
-	console.log(typeQueue);
+	//console.log(typeQueue);
 	calculateTypes(typeQueue);
 }
 
@@ -162,9 +162,9 @@ function calculateTypes(typeArray) {
 		combinedImmunities.splice(0, 0, ...types[type].immune);
 	}
 
-	console.log("weak: " + combinedWeaknesses);
-	console.log("resist: " + combinedResistances);
-	console.log("immune: " + combinedImmunities);
+	// console.log("weak: " + combinedWeaknesses);
+	// console.log("resist: " + combinedResistances);
+	// console.log("immune: " + combinedImmunities);
 
 	const includesMultiple = (array, toSearch) => {
 		return array.indexOf(toSearch) !== array.lastIndexOf(toSearch);
