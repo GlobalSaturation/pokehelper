@@ -120,12 +120,19 @@ function addToQueue(btn, typeName) {
 	if (typeQueue.includes(typeName)) {
 		const toRemove = typeQueue.findIndex((item) => item === typeName);
 		typeQueue.splice(toRemove, 1);
+
+		//remove selected style from button before we remove it from the queue
+		btnQueue[toRemove].classList.remove("selected");
 		btnQueue.splice(toRemove, 1);
 	}
 	else {
 		typeQueue.push(typeName);
+		btnQueue.push(btn);
+
+		btn.classList.add("selected");
 		if (typeQueue.length > 2) {
 			typeQueue.shift();//take out first element in array
+			btnQueue[0].classList.remove("selected");
 			btnQueue.shift();//take out first element in array
 		}
 	}
@@ -192,13 +199,20 @@ function calculateTypes(typeArray) {
 	console.log(results);
 }
 
-
 //create buttons of each available type
 const container = document.querySelector("#buttons");
 for (let type in types) {
 	const btn = document.createElement("button");
-	btn.addEventListener("click", (e) => addToQueue(e.target,type));
-	btn.innerText = type;
-	btn.style.backgroundColor = types[type].color;
+	const image = document.createElement("img");
+	const span = document.createElement("span");
+
+	image.src = `images/${type}.png`;
+	span.innerText = type;
+	btn.appendChild(image);
+	btn.appendChild(span);
+
+	btn.classList.add("typeBtn");
+	btn.addEventListener("click", (e) => addToQueue(e.currentTarget,type));
+	btn.style.setProperty("--typeColor", types[type].color);
 	container.appendChild(btn);
 }

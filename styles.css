@@ -1,0 +1,48 @@
+:root {
+	--typeColor: black;
+	--basicColor: white;
+}
+
+.typeBtn {
+	border: 2px solid var(--typeColor);
+	background-color: var(--typeColor);
+	color: var(--basicColor);
+	text-shadow: 1px 1px black;
+	cursor: pointer;
+
+	display: flex;
+	align-items: center;
+
+	width: 120px;
+	height: 30px;
+	padding: 2px;
+	border-radius: 5px;
+
+  transition: ease-out 0.4s;
+}
+
+.typeBtn:hover {
+	/* slide effect */
+	box-shadow: inset -85px 0 0 0 var(--basicColor);
+	color: var(--typeColor);
+	text-shadow: none;
+}
+
+.typeBtn.selected {
+	background-color: var(--basicColor);
+	color: var(--typeColor);
+	text-shadow: none;
+  transition: linear 0.2s;
+}
+
+.typeBtn > span {
+	margin: auto;
+	font-size: 1.1rem;
+}
+
+.typeBtn > img {
+	height: 100%;
+	object-fit: scale-down;
+	margin: 0;
+	justify-self: left;
+}
