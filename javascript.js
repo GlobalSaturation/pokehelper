@@ -1,23 +1,5 @@
 //define master type obj that stores a single type obj per key
 const types = {
-	grass: {
-		color: "#3fa129",
-		weak: ["flying", "poison", "bug", "fire", "ice"],
-		resist: ["ground", "water", "grass", "electric"],
-		immune: [],
-	},
-	water: {
-		color: "#2980ef",
-		weak: ["grass", "electric"],
-		resist: ["fire", "water", "ice", "steel"],
-		immune: [],
-	},
-	fire: {
-		color: "#e62829",
-		weak: ["ground", "rock", "water"],
-		resist: ["bug", "fire", "grass", "steel", "ice", "fairy"],
-		immune: [],
-	},
 	normal: {
 		color: "#9fa19f",
 		weak: ["fighting"],
@@ -71,6 +53,24 @@ const types = {
 		weak: ["fighting", "ground", "fire"],
 		resist: ["normal", "flying", "rock", "bug", "steel", "grass", "psychic", "ice", "dragon", "fairy"],
 		immune: ["poison"],
+	},
+	fire: {
+		color: "#e62829",
+		weak: ["ground", "rock", "water"],
+		resist: ["bug", "fire", "grass", "steel", "ice", "fairy"],
+		immune: [],
+	},
+	water: {
+		color: "#2980ef",
+		weak: ["grass", "electric"],
+		resist: ["fire", "water", "ice", "steel"],
+		immune: [],
+	},
+	grass: {
+		color: "#3fa129",
+		weak: ["flying", "poison", "bug", "fire", "ice"],
+		resist: ["ground", "water", "grass", "electric"],
+		immune: [],
 	},
 	electric: {
 		color: "#fac000",

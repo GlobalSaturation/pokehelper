@@ -3,29 +3,80 @@
 	--basicColor: white;
 }
 
-.typeBtn {
-	border: 2px solid var(--typeColor);
-	background-color: var(--typeColor);
-	color: var(--basicColor);
-	text-shadow: 1px 1px black;
-	cursor: pointer;
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+
+body {
+	min-height: 100vh;
+	background-image: linear-gradient(white, white, lightcoral);
+	font-family: Arial, sans-serif;
 
 	display: flex;
+	flex-direction: column;
+}
+
+header {
+	background-image:
+		linear-gradient(to bottom, rgb(0,0,0,0.3), rgb(255,255,255,0.3)),
+		url('images/pokeball_banner.png');
+
+	background-size: cover;
+	background-position: center;
+	padding: 30px;
+	margin-bottom: 15px;
+}
+
+header > h1 {
+	color: white;
+	font-size: 1.6rem;
+	text-shadow: 0 0 6px black;
+	text-align: center;
+}
+ main {
+	display: grid;
+	place-content: center;
+	grid-template-columns: 100%;
+	/* fill all the extra space in the page to be part of main */
+	flex-grow: 1;
+ }
+
+#buttons {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.3rem;
+	justify-content: center;
+}
+
+.typeBtn {
+	user-select: none;
+	border: 3px solid var(--typeColor);
+	background-color: var(--typeColor);
+	color: var(--basicColor);
+	text-shadow: 1px 0 3px black;
+	cursor: pointer;
+
+	display: inline-flex;
 	align-items: center;
 
-	width: 120px;
-	height: 30px;
+	width: 155px;
+	height: 45px;
 	padding: 2px;
 	border-radius: 5px;
 
   transition: ease-out 0.4s;
 }
 
-.typeBtn:hover {
-	/* slide effect */
-	box-shadow: inset -85px 0 0 0 var(--basicColor);
-	color: var(--typeColor);
-	text-shadow: none;
+/* only enable hover for devices that actually support it */
+@media (hover: hover) {
+	.typeBtn:hover {
+		/* slide effect */
+		box-shadow: inset -107px 0 0 0 var(--basicColor);
+		color: var(--typeColor);
+		text-shadow: none;
+	}
 }
 
 .typeBtn.selected {
@@ -37,7 +88,7 @@
 
 .typeBtn > span {
 	margin: auto;
-	font-size: 1.1rem;
+	font-size: 1.4rem;
 }
 
 .typeBtn > img {
@@ -45,4 +96,11 @@
 	object-fit: scale-down;
 	margin: 0;
 	justify-self: left;
+}
+
+/* split the content in half with a medium screen */
+@media screen and (min-width: 768px) {
+	main {
+		grid-template-columns: 50% 50%;
+	}
 }
