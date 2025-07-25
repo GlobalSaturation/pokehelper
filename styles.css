@@ -1,6 +1,8 @@
 :root {
 	--typeColor: black;
 	--basicColor: white;
+
+	--back-color: whitesmoke;
 }
 
 * {
@@ -11,7 +13,7 @@
 
 body {
 	min-height: 100vh;
-	background-image: linear-gradient(white, white, lightpink);
+	background-image: linear-gradient(var(--back-color), var(--back-color), lightpink);
 	font-family: Arial, sans-serif;
 }
 
@@ -23,6 +25,7 @@ header {
 	background-size: cover;
 	background-position: center;
 	padding: 30px;
+	margin-bottom: 10px;
 }
 
 header > h1 {
@@ -45,13 +48,18 @@ main {
 	margin-right: auto;
 }
 
+.flexcolumn,
+.flexcolumn-small {
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
+}
+
+.flexcolumn-small {
+	gap: 0.5rem;
+}
+
 #buttons {
-	/* cap the width at about 3 columns */
-	inline-size: min(100%, 35em);
-
-	margin-top: 11px;
-	margin-inline: auto;
-
 	/* dynamically allocate grid columns */
 	display: grid;
 	--min-size: 140px;
@@ -60,8 +68,16 @@ main {
 	justify-content: center;
 }
 
-.typeBtn {
+button {
 	user-select: none;
+}
+
+button:focus {
+	/* removes the weird blue click effect on mobile */
+	-webkit-tap-highlight-color: transparent;
+}
+
+.typeBtn {
 	border: 3px solid var(--typeColor);
 	background-color: var(--typeColor);
 	color: var(--basicColor);
@@ -88,10 +104,6 @@ main {
 	}
 }
 
-.typeBtn:focus {
-	/* removes the weird blue click effect on mobile */
-	-webkit-tap-highlight-color: transparent;
-}
 
 .typeBtn.selected {
 	background-color: var(--basicColor);
@@ -112,15 +124,8 @@ main {
 	justify-self: left;
 }
 
-#results {
-	/* cap the width at about 6 columns */
-	inline-size: min(100%, 30em);
-	margin-inline: auto;
-}
-
 #results > div {
 	display: grid;
-	flex-direction: column;
 	--min-size: 75px;
 	grid-template-columns: repeat(auto-fill, minmax(min(var(--min-size),100%),1fr));
 	gap: 0.3rem;
@@ -145,16 +150,37 @@ main {
 	font-size: 1.1rem;
 }
 
+h2 {
+	font-size: 1.3rem;
+}
+
+#mode-switch {
+	display: flex;
+	gap: 5px;
+}
+
 #mode-switch > button {
 	cursor: pointer;
+	background-color: gray;
+	color: white;
+	text-shadow: 1px 0 3px black;
+	border: 3px solid gray;
+	border-radius: 20px;
+	
+	font-size: 1rem;
+	width: 6rem;
+	height: 2rem;
 }
 
 #mode-switch > button.selected {
-	background-color: red;
+	background-color: white;
+	color: gray;
+	transition: linear 0.2s;
+	text-shadow: none;
 }
 
 /* split the content in half with a medium screen */
-@media screen and (min-width: 660px) {
+@media screen and (min-width: 690px) {
 	main {
 		grid-template-columns: 1fr 1fr;
 		gap: 5vw;

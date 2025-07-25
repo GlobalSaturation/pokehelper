@@ -388,7 +388,10 @@ function resetCalc() {
 //initialize mode buttons
 const offenseBtn = document.querySelector("#offense");
 const defenseBtn = document.querySelector("#defense");
-const modeChange = (btn, oppositeBtn, mode, newQueueMax) => {
+function modeChange(mode, newQueueMax) {
+	const btn = (mode === modes.DEFENSE) ? defenseBtn : offenseBtn;
+	const oppositeBtn = (mode === modes.DEFENSE) ? offenseBtn : defenseBtn;
+
 	if (!btn.classList.contains("selected")) {
 		btn.classList.add("selected");
 		oppositeBtn.classList.remove("selected");
@@ -397,9 +400,19 @@ const modeChange = (btn, oppositeBtn, mode, newQueueMax) => {
 		resetCalc();
 	}
 };
-offenseBtn.addEventListener("click", () => modeChange(offenseBtn, defenseBtn, modes.OFFENSE, 1));
-defenseBtn.addEventListener("click", () => modeChange(defenseBtn, offenseBtn, modes.DEFENSE, 2));
+//offense
+offenseBtn.addEventListener("click", () => {
+	document.querySelector("#choose-types").innerText = "Choose type";
+	document.querySelector("#damage-text").innerText = "Deals damage to:";
+	modeChange(modes.OFFENSE, 1);
+});
+//defense
+defenseBtn.addEventListener("click", () => {
+	document.querySelector("#choose-types").innerText = "Choose types";
+	document.querySelector("#damage-text").innerText = "Takes damage from:";
+	modeChange(modes.DEFENSE, 2);
+});
 
 //set defaults at the start
-modeChange(defenseBtn, offenseBtn, modes.DEFENSE, 2);
+modeChange(modes.DEFENSE, 2);
 calculateTypes([], currMode);
