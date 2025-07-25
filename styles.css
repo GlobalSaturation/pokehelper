@@ -13,9 +13,6 @@ body {
 	min-height: 100vh;
 	background-image: linear-gradient(white, white, lightpink);
 	font-family: Arial, sans-serif;
-
-	/* display: flex; */
-	/* flex-direction: column; */
 }
 
 header {
@@ -79,7 +76,7 @@ main {
 	padding: 2px;
 	border-radius: 5px;
 
-  transition: ease-out 0.4s;
+	transition: ease-out 0.4s;
 }
 
 /* only enable hover for devices that actually support it */
@@ -100,7 +97,7 @@ main {
 	background-color: var(--basicColor);
 	color: var(--typeColor);
 	text-shadow: none;
-  transition: linear 0.2s;
+	transition: linear 0.2s;
 }
 
 .typeBtn > span {
@@ -125,7 +122,7 @@ main {
 	display: grid;
 	flex-direction: column;
 	--min-size: 75px;
-  grid-template-columns: repeat(auto-fill, minmax(min(var(--min-size),100%),1fr));
+	grid-template-columns: repeat(auto-fill, minmax(min(var(--min-size),100%),1fr));
 	gap: 0.3rem;
 	justify-content: left;
 }
@@ -146,6 +143,14 @@ main {
 	border-radius: 2px;
 	text-align: center;
 	font-size: 1.1rem;
+}
+
+#mode-switch > button {
+	cursor: pointer;
+}
+
+#mode-switch > button.selected {
+	background-color: red;
 }
 
 /* split the content in half with a medium screen */

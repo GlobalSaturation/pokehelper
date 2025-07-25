@@ -1,119 +1,254 @@
+//GLOBALS////////////////////////
+
+//make a queue that stores the first two choices and removes the first thing if capacity is exceeded
+let typeQueue = [];
+//also this so we can access the button ref that corresponds to the types in the typeQueue
+let btnQueue = [];
+let queueMax = 2;
+
+const modes = Object.freeze({
+	OFFENSE: "offense",
+	DEFENSE: "defense",
+});
+let currMode;
+
 //define master type obj that stores a single type obj per key
 const types = {
 	normal: {
 		color: "#9fa19f",
-		weak: ["fighting"],
-		resist: [],
-		immune: ["ghost"],
+		offense: {
+			weak: [],
+			resist: ["rock", "steel"],
+			immune: ["ghost"],
+		},
+		defense: {
+			weak: ["fighting"],
+			resist: [],
+			immune: ["ghost"],
+		},
 	},
 	fighting: {
 		color: "#ff8000",
-		weak: ["flying", "psychic", "fairy"],
-		resist: ["rock", "bug", "dark"],
-		immune: [],
+		offense: {
+			weak: ["normal", "rock", "ice", "steel", "dark"],
+			resist: ["flying", "poison", "bug", "psychic", "fairy"],
+			immune: ["ghost"],
+		},
+		defense: {
+			weak: ["flying", "psychic", "fairy"],
+			resist: ["rock", "bug", "dark"],
+			immune: [],
+		},
 	},
 	flying: {
 		color: "#81b9ef",
-		weak: ["rock", "electric", "ice"],
-		resist: ["fighting", "bug", "grass"],
-		immune: ["ground"],
+		offense: {
+			weak: ["fighting", "bug", "grass"],
+			resist: ["rock", "electric", "steel"],
+			immune: [],
+		},
+		defense: {
+			weak: ["rock", "electric", "ice"],
+			resist: ["fighting", "bug", "grass"],
+			immune: ["ground"],
+		},
 	},
 	poison: {
 		color: "#9141cb",
-		weak: ["ground", "psychic"],
-		resist: ["fighting", "poison", "grass", "bug", "fairy"],
-		immune: [],
+		offense: {
+			weak: ["grass", "fairy"],
+			resist: ["poison", "ground", "rock", "ghost"],
+			immune: ["steel"],
+		},
+		defense: {
+			weak: ["ground", "psychic"],
+			resist: ["fighting", "poison", "grass", "bug", "fairy"],
+			immune: [],
+		},
 	},
 	ground: {
 		color: "#915121",
-		weak: ["water", "grass", "ice"],
-		resist: ["poison", "rock"],
-		immune: ["electric"],
+		offense: {
+			weak: ["poison", "rock", "fire", "electric", "steel"],
+			resist: ["bug", "grass"],
+			immune: ["flying"],
+		},
+		defense: {
+			weak: ["water", "grass", "ice"],
+			resist: ["poison", "rock"],
+			immune: ["electric"],
+		},
 	},
 	rock: {
 		color: "#afa981",
-		weak: ["fighting", "ground", "water", "grass", "steel"],
-		resist: ["normal", "flying", "poison", "fire"],
-		immune: [],
+		offense: {
+			weak: ["flying", "bug", "fire", "ice"],
+			resist: ["fighting", "ground", "steel"],
+			immune: [],
+		},
+		defense: {
+			weak: ["fighting", "ground", "water", "grass", "steel"],
+			resist: ["normal", "flying", "poison", "fire"],
+			immune: [],
+		},
 	},
 	bug: {
 		color: "#91a119",
-		weak: ["flying", "rock", "fire"],
-		resist: ["fighting", "ground", "grass"],
-		immune: [],
+		offense: {
+			weak: ["grass", "psychic", "dark"],
+			resist: ["fighting", "flying", "poison", "ghost", "steel", "fire", "fairy"],
+			immune: [],
+		},
+		defense: {
+			weak: ["flying", "rock", "fire"],
+			resist: ["fighting", "ground", "grass"],
+			immune: [],
+		},
 	},
 	ghost: {
 		color: "#704170",
-		weak: ["ghost", "dark"],
-		resist: ["poison", "bug"],
-		immune: ["normal", "fighting"],
+		offense: {
+			weak: ["ghost", "psychic"],
+			resist: ["dark"],
+			immune: ["normal"],
+		},
+		defense: {
+			weak: ["ghost", "dark"],
+			resist: ["poison", "bug"],
+			immune: ["normal", "fighting"],
+		},
 	},
 	steel: {
 		color: "#60a1b8",
-		weak: ["fighting", "ground", "fire"],
-		resist: ["normal", "flying", "rock", "bug", "steel", "grass", "psychic", "ice", "dragon", "fairy"],
-		immune: ["poison"],
+		offense: {
+			weak: ["rock", "ice", "fairy"],
+			resist: ["steel", "fire", "water", "electric"],
+			immune: [],
+		},
+		defense: {
+			weak: ["fighting", "ground", "fire"],
+			resist: ["normal", "flying", "rock", "bug", "steel", "grass", "psychic", "ice", "dragon", "fairy"],
+			immune: ["poison"],
+		},
 	},
 	fire: {
 		color: "#e62829",
-		weak: ["ground", "rock", "water"],
-		resist: ["bug", "fire", "grass", "steel", "ice", "fairy"],
-		immune: [],
+		offense: {
+			weak: ["bug", "grass", "ice", "steel"],
+			resist: ["rock", "fire", "water", "dragon"],
+			immune: [],
+		},
+		defense: {
+			weak: ["ground", "rock", "water"],
+			resist: ["bug", "fire", "grass", "steel", "ice", "fairy"],
+			immune: [],
+		},
 	},
 	water: {
 		color: "#2980ef",
-		weak: ["grass", "electric"],
-		resist: ["fire", "water", "ice", "steel"],
-		immune: [],
+		offense: {
+			weak: ["ground", "rock", "fire"],
+			resist: ["water", "grass", "dragon"],
+			immune: [],
+		},
+		defense: {
+			weak: ["grass", "electric"],
+			resist: ["fire", "water", "ice", "steel"],
+			immune: [],
+		},
 	},
 	grass: {
 		color: "#3fa129",
-		weak: ["flying", "poison", "bug", "fire", "ice"],
-		resist: ["ground", "water", "grass", "electric"],
-		immune: [],
+		offense: {
+			weak: ["ground", "rock", "water"],
+			resist: ["flying", "poison", "bug", "fire", "grass", "dragon", "steel"],
+			immune: [],
+		},
+		defense: {
+			weak: ["flying", "poison", "bug", "fire", "ice"],
+			resist: ["ground", "water", "grass", "electric"],
+			immune: [],
+		},
 	},
 	electric: {
 		color: "#fac000",
-		weak: ["ground"],
-		resist: ["flying", "electric", "steel"],
-		immune: [],
+		offense: {
+			weak: ["flying", "water"],
+			resist: ["grass", "electric", "dragon"],
+			immune: ["ground"],
+		},
+		defense: {
+			weak: ["ground"],
+			resist: ["flying", "electric", "steel"],
+			immune: [],
+		},
 	},
 	psychic: {
 		color: "#ef4179",
-		weak: ["bug", "ghost", "dark"],
-		resist: ["fighting", "psychic"],
-		immune: [],
+		offense: {
+			weak: ["fighting", "poison"],
+			resist: ["psychic", "steel"],
+			immune: ["dark"],
+		},
+		defense: {
+			weak: ["bug", "ghost", "dark"],
+			resist: ["fighting", "psychic"],
+			immune: [],
+		},
 	},
 	ice: {
 		color: "#3dcef3",
-		weak: ["fighting", "rock", "fire", "steel"],
-		resist: ["ice"],
-		immune: [],
+		offense: {
+			weak: ["flying", "ground", "grass", "dragon"],
+			resist: ["water", "ice", "steel", "fire"],
+			immune: [],
+		},
+		defense: {
+			weak: ["fighting", "rock", "fire", "steel"],
+			resist: ["ice"],
+			immune: [],
+		},
 	},
 	dragon: {
 		color: "#5060e1",
-		weak: ["ice", "dragon", "fairy"],
-		resist: ["fire", "water", "grass", "electric"],
-		immune: [],
+		offense: {
+			weak: ["dragon"],
+			resist: ["steel"],
+			immune: ["fairy"],
+		},
+		defense: {
+			weak: ["ice", "dragon", "fairy"],
+			resist: ["fire", "water", "grass", "electric"],
+			immune: [],
+		},
 	},
 	dark: {
 		color: "#624d4e",
-		weak: ["fighting", "bug", "fairy"],
-		resist: ["ghost", "dark"],
-		immune: ["psychic"],
+		offense: {
+			weak: ["ghost", "psychic"],
+			resist: ["fighting", "dark", "fairy"],
+			immune: [],
+		},
+		defense: {
+			weak: ["fighting", "bug", "fairy"],
+			resist: ["ghost", "dark"],
+			immune: ["psychic"],
+		},
 	},
 	fairy: {
 		color: "#ef70ef",
-		weak: ["poison", "steel"],
-		resist: ["fighting", "bug", "dark"],
-		immune: ["dragon"],
+		offense: {
+			weak: ["fighting", "dragon", "dark"],
+			resist: ["poison", "steel", "fire"],
+			immune: [],
+		},
+		defense: {
+			weak: ["poison", "steel"],
+			resist: ["fighting", "bug", "dark"],
+			immune: ["dragon"],
+		},
 	},
 }
-
-//make a global queue that stores the first two choices and removes the first thing if capacity is exceeded
-let typeQueue = [];
-//also this so we can access the button ref that corresponds to the types in the typeQueue
-let btnQueue = [];
 
 function addToQueue(btn, typeName) {
 	//if we've already added this type, remove it
@@ -130,19 +265,18 @@ function addToQueue(btn, typeName) {
 		btnQueue.push(btn);
 
 		btn.classList.add("selected");
-		if (typeQueue.length > 2) {
+		if (typeQueue.length > queueMax) {
 			typeQueue.shift();//take out first element in array
 			btnQueue[0].classList.remove("selected");
 			btnQueue.shift();//take out first element in array
 		}
 	}
 	//console.log(typeQueue);
-	calculateTypes(typeQueue);
+	calculateTypes(typeQueue, currMode);
 }
 
-
 //take the strings from an array containing type names to create results obj
-function calculateTypes(typeArray) {
+function calculateTypes(typeArray, mode) {
 
 	let results = {
 		extraEffective: [],
@@ -157,14 +291,10 @@ function calculateTypes(typeArray) {
 	let combinedResistances = [];
 	let combinedImmunities = [];
 	for (let type of typeArray) {
-		combinedWeaknesses.splice(0, 0, ...types[type].weak);
-		combinedResistances.splice(0, 0, ...types[type].resist);
-		combinedImmunities.splice(0, 0, ...types[type].immune);
+		combinedWeaknesses.splice(0, 0, ...types[type][mode].weak);
+		combinedResistances.splice(0, 0, ...types[type][mode].resist);
+		combinedImmunities.splice(0, 0, ...types[type][mode].immune);
 	}
-
-	// console.log("weak: " + combinedWeaknesses);
-	// console.log("resist: " + combinedResistances);
-	// console.log("immune: " + combinedImmunities);
 
 	const includesMultiple = (array, toSearch) => {
 		return array.indexOf(toSearch) !== array.lastIndexOf(toSearch);
@@ -244,5 +374,32 @@ for (let type in types) {
 	container.appendChild(btn);
 }
 
-//show neutral results at the start
-calculateTypes([]);
+//set all buttons and results back to defauls
+function resetCalc() {
+	calculateTypes([], currMode);
+	typeQueue = [];
+	btnQueue = [];
+	const typeBtns = document.querySelectorAll(".typeBtn");
+	for (let typeBtn of typeBtns) {
+		typeBtn.classList.remove("selected");
+	}
+}
+
+//initialize mode buttons
+const offenseBtn = document.querySelector("#offense");
+const defenseBtn = document.querySelector("#defense");
+const modeChange = (btn, oppositeBtn, mode, newQueueMax) => {
+	if (!btn.classList.contains("selected")) {
+		btn.classList.add("selected");
+		oppositeBtn.classList.remove("selected");
+		currMode = mode;
+		queueMax = newQueueMax;
+		resetCalc();
+	}
+};
+offenseBtn.addEventListener("click", () => modeChange(offenseBtn, defenseBtn, modes.OFFENSE, 1));
+defenseBtn.addEventListener("click", () => modeChange(defenseBtn, offenseBtn, modes.DEFENSE, 2));
+
+//set defaults at the start
+modeChange(defenseBtn, offenseBtn, modes.DEFENSE, 2);
+calculateTypes([], currMode);
