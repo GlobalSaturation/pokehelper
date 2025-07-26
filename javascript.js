@@ -12,6 +12,8 @@ const modes = Object.freeze({
 });
 let currMode;
 
+let isGuessMode = false;
+
 //define master type obj that stores a single type obj per key
 const types = {
 	normal: {
@@ -338,6 +340,8 @@ function fillResultsPage(results) {
 	const createResultElement = (type) => {
 		const element = document.createElement("div");
 		element.innerText = type;
+		//also set inner data to its type so that we can retrieve it for guess mode
+		// element.dataset.typeName = type;
 		element.style.setProperty("--typeColor", types[type].color);
 		element.classList.add("resultElement");
 		return element;

@@ -55,6 +55,12 @@ main {
 	gap: 2rem;
 }
 
+.flexrow {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
 .flexcolumn-small {
 	gap: 0.5rem;
 }
