@@ -333,29 +333,35 @@ function calculateTypes(typeArray, mode) {
 	fillResultsPage(results);
 }
 
-function fillResultsPage(results) {
-	//clear all previous results
-	document.querySelectorAll(".resultElement").forEach(e => e.remove());
+//call this only once to create the results elements
+function createResultElements() {
+	const defaultDiv = document.querySelector("#neutral");
 
-	const createResultElement = (type) => {
+	for (let type in types ) {
 		const element = document.createElement("div");
 		element.innerText = type;
 		//also set inner data to its type so that we can retrieve it for guess mode
-		// element.dataset.typeName = type;
+		element.dataset.typeName = type;
 		element.style.setProperty("--typeColor", types[type].color);
 		element.classList.add("resultElement");
-		return element;
+		defaultDiv.appendChild(element);
 	}
+}
 
+//attach the result elements to their spots
+function fillResultsPage(results) {
 	for (let result in results) {
 		const resultDiv = document.querySelector("#" + result);
 		const headerTag = resultDiv.previousElementSibling;
 		headerTag.style.display = "none";//hide until we fill with elements
 
+		//for each type in a result section, attach an element in its correct spot
 		results[result].forEach((type) => {
 			headerTag.style.display = "block";
-			const newElement = createResultElement(type);
-			resultDiv.appendChild(newElement);
+			//access element by its typeName
+			//"type-name" is with dashes because of how camelCase in js is converted to dashes for css and html stuff!
+			const elementToAttach = document.querySelector(`[data-type-name="${type}"]`);
+			resultDiv.appendChild(elementToAttach);
 		});
 	}
 }
@@ -380,7 +386,7 @@ for (let type in types) {
 
 //set all buttons and results back to defauls
 function resetCalc() {
-	calculateTypes([], currMode);
+	calculateTypes([], currMode);//call with an empty results array to reset the results
 	typeQueue = [];
 	btnQueue = [];
 	const typeBtns = document.querySelectorAll(".typeBtn");
@@ -418,5 +424,5 @@ defenseBtn.addEventListener("click", () => {
 });
 
 //set defaults at the start
+createResultElements();
 modeChange(modes.DEFENSE, 2);
-calculateTypes([], currMode);
