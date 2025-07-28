@@ -369,10 +369,8 @@ function fillResultsPage(results) {
 		});
 	}
 
-	//if guess mode is on, edit the promt to ask for the selected types
-	if (isGuessMode) {
-		createPromptTypes();
-	}
+	//create or remove guess mode type prompts
+	togglePromptTypes();
 }
 
 //create buttons of each available type
@@ -395,9 +393,9 @@ for (let type in types) {
 
 //set all buttons and results back to defauls
 function resetCalc() {
-	calculateTypes([], currMode);//call with an empty results array to reset the results
 	typeQueue = [];
 	btnQueue = [];
+	calculateTypes([], currMode);//call with an empty results array to reset the results
 	const typeBtns = document.querySelectorAll(".typeBtn");
 	for (let typeBtn of typeBtns) {
 		typeBtn.classList.remove("selected");
@@ -437,8 +435,10 @@ defenseBtn.addEventListener("click", () => {
 });
 
 //when we update the results and are in guess mode, show what types are selected in the prompt
-function createPromptTypes() {
+function togglePromptTypes() {
 	removeAll("#word-container > span");
+
+	if (isGuessMode) {
 	const container = document.querySelector("#word-container");
 
 	//create a span element for the type/s, attach it to the container
@@ -449,6 +449,7 @@ function createPromptTypes() {
 		span.style.setProperty("--typeColor", types[type].color);
 		container.appendChild(span);
 	});
+	}
 }
 
 //this is called when the guess checkbox is clicked
@@ -465,11 +466,11 @@ function handleGuessMode() {
 		}
 	}
 
+	togglePromptTypes();
+
 	if (isGuessMode) {
 		//create the guess ui
 		const guessDiv = document.querySelector("#guess-ui");
-
-		createPromptTypes();
 
 		for (let type in types ) {
 			const element = document.createElement("button");
@@ -484,7 +485,6 @@ function handleGuessMode() {
 	} else {
 		//remove the guess ui
 		document.querySelector("#guess-prompt-wrapper > h2").style.display ="none";
-		removeAll("#word-container > span");
 		removeAll(".guessElement");
 	}
 }
