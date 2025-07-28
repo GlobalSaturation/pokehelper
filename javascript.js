@@ -338,7 +338,27 @@ function calculateTypes(typeArray, mode) {
 }
 
 //call this only once to create the results elements
-function createResultElements() {
+function createTypeElements() {
+	//create buttons of each available type////////
+	const container = document.querySelector("#buttons");
+	for (let type in types) {
+		const btn = document.createElement("button");
+		const image = document.createElement("img");
+		const span = document.createElement("span");
+
+		image.src = `images/${type}.png`;
+		span.innerText = type;
+		btn.appendChild(image);
+		btn.appendChild(span);
+
+		btn.classList.add("typeBtn");
+		btn.addEventListener("click", (e) => addToQueue(e.currentTarget,type));
+		btn.style.setProperty("--typeColor", types[type].color);
+		container.appendChild(btn);
+	}
+
+
+	//create result elements////////////////
 	const defaultDiv = document.querySelector("#neutral");
 
 	for (let type in types ) {
@@ -349,6 +369,22 @@ function createResultElements() {
 		element.style.setProperty("--typeColor", types[type].color);
 		element.classList.add("resultElement");
 		defaultDiv.appendChild(element);
+	}
+
+
+	//create the guess ui buttons////////
+	const guessDiv = document.querySelector("#guess-ui");
+
+	for (let type in types ) {
+		const element = document.createElement("button");
+		element.innerText = type;
+		//also set inner data to its type so that we can retrieve it for guess mode
+		// element.dataset.typeName = type;
+		element.style.setProperty("--typeColor", types[type].color);
+		element.classList.add("guessElement");
+		element.addEventListener("click", (e) => revealGuess(e.currentTarget,type));
+		element.style.display = "none";//hide at the start and toggle with guess mode
+		guessDiv.appendChild(element);
 	}
 }
 
@@ -376,23 +412,6 @@ function fillResultsPage(results) {
 	}
 }
 
-//create buttons of each available type
-const container = document.querySelector("#buttons");
-for (let type in types) {
-	const btn = document.createElement("button");
-	const image = document.createElement("img");
-	const span = document.createElement("span");
-
-	image.src = `images/${type}.png`;
-	span.innerText = type;
-	btn.appendChild(image);
-	btn.appendChild(span);
-
-	btn.classList.add("typeBtn");
-	btn.addEventListener("click", (e) => addToQueue(e.currentTarget,type));
-	btn.style.setProperty("--typeColor", types[type].color);
-	container.appendChild(btn);
-}
 
 //set all buttons and results back to defauls
 function resetCalc() {
@@ -405,12 +424,11 @@ function resetCalc() {
 	}
 }
 
-//initialize mode buttons
-const offenseBtn = document.querySelector("#offense");
-const defenseBtn = document.querySelector("#defense");
-
 //called at the beginning and whenever a mode button is pressed
 function modeChange(mode, newQueueMax) {
+	const offenseBtn = document.querySelector("#offense");
+	const defenseBtn = document.querySelector("#defense");
+
 	//determine which buttons we're referring to later based on the mode parameter
 	const btn = (mode === modes.DEFENSE) ? defenseBtn : offenseBtn;
 	const oppositeBtn = (mode === modes.DEFENSE) ? offenseBtn : defenseBtn;
@@ -424,18 +442,6 @@ function modeChange(mode, newQueueMax) {
 		resetCalc();
 	}
 };
-//offense
-offenseBtn.addEventListener("click", () => {
-	document.querySelector("#choose-types").innerText = "Choose type";
-	document.querySelector("#damage-text").innerText = "Deals damage to:";
-	modeChange(modes.OFFENSE, 1);
-});
-//defense
-defenseBtn.addEventListener("click", () => {
-	document.querySelector("#choose-types").innerText = "Choose types";
-	document.querySelector("#damage-text").innerText = "Takes damage from:";
-	modeChange(modes.DEFENSE, 2);
-});
 
 //when we update the results and are in guess mode, show what types are selected in the prompt
 function togglePromptTypes() {
@@ -494,43 +500,48 @@ function handleGuessMode() {
 	togglePromptTypes();
 
 	if (isGuessMode) {
-		//create the guess ui
-		const guessDiv = document.querySelector("#guess-ui");
-
-		for (let type in types ) {
-			const element = document.createElement("button");
-			document.querySelector("#guess-prompt-wrapper > h2").style.display = "block";
-			element.innerText = type;
-			//also set inner data to its type so that we can retrieve it for guess mode
-			// element.dataset.typeName = type;
-			element.style.setProperty("--typeColor", types[type].color);
-			element.classList.add("guessElement");
-			element.addEventListener("click", (e) => revealGuess(e.currentTarget,type));
-			guessDiv.appendChild(element);
-		}
+		//make the ui visible
+		document.querySelector("#guess-prompt-wrapper > h2").style.display = "block";
+		document.querySelectorAll(".guessElement").forEach((e) => e.style.display = "block");
 	} else {
-		//remove the guess ui
+		//hide the guess ui
 		document.querySelector("#guess-prompt-wrapper > h2").style.display ="none";
-		removeAll(".guessElement");
+		document.querySelectorAll(".guessElement").forEach((e) => e.style.display = "none");
 	}
 }
 
-//initialize guess mode
-const guessCheckbox = document.querySelector("#guess-mode");
-guessCheckbox.addEventListener("click", () => {
-	if (guessCheckbox.checked) {
-		isGuessMode = true;
-	} else {
-		isGuessMode = false;
-	}
-	handleGuessMode();
-});
-
 //set defaults at the start
 function startUp() {
+	//initialize guess mode checkbox
+	const guessCheckbox = document.querySelector("#guess-mode");
+	guessCheckbox.addEventListener("click", () => {
+		if (guessCheckbox.checked) {
+			isGuessMode = true;
+		} else {
+			isGuessMode = false;
+		}
+		handleGuessMode();
+	});
+
+	//initialize offense/defense buttons
+	const offenseBtn = document.querySelector("#offense");
+	const defenseBtn = document.querySelector("#defense");
+	//offense
+	offenseBtn.addEventListener("click", () => {
+		document.querySelector("#choose-types").innerText = "Choose type";
+		document.querySelector("#damage-text").innerText = "Deals damage to:";
+		modeChange(modes.OFFENSE, 1);
+	});
+	//defense
+	defenseBtn.addEventListener("click", () => {
+		document.querySelector("#choose-types").innerText = "Choose types";
+		document.querySelector("#damage-text").innerText = "Takes damage from:";
+		modeChange(modes.DEFENSE, 2);
+	});
+
 	//don't display the guess prompt at the start
 	document.querySelector("#guess-prompt-wrapper > h2").style.display ="none";
-	createResultElements();
+	createTypeElements();
 	//call this to start page in defense mode, and to give us the blank results at the start
 	modeChange(modes.DEFENSE, 2);
 }
