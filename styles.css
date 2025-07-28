@@ -1,6 +1,7 @@
 :root {
 	--typeColor: black;
 	--basicColor: white;
+	--outlineColor: gray;
 
 	--back-color: whitesmoke;
 }
@@ -76,6 +77,9 @@ main {
 
 button {
 	user-select: none;
+	border: solid rgba(0,0,0,.3);
+	border-width: 0 0 4px;
+	touch-action: manipulation;
 }
 
 button:focus {
@@ -84,7 +88,6 @@ button:focus {
 }
 
 .typeBtn {
-	border: 3px solid var(--typeColor);
 	background-color: var(--typeColor);
 	color: var(--basicColor);
 	text-shadow: 1px 0 3px black;
@@ -96,9 +99,9 @@ button:focus {
 	/* fixed height in pixels so that the child img tag works properly */
 	height: 45px;
 	padding: 2px;
-	border-radius: 5px;
+	border-radius: 10px;
 
-	transition: ease-out 0.4s;
+	transition: ease-out 0.3s;
 }
 
 /* only enable hover for devices that actually support it */
@@ -110,12 +113,12 @@ button:focus {
 	}
 }
 
-
 .typeBtn.selected {
 	background-color: var(--basicColor);
 	color: var(--typeColor);
 	text-shadow: none;
-	transition: linear 0.2s;
+	transition: linear 0.1s;
+	border: 3px solid var(--typeColor);
 }
 
 .typeBtn > span {
@@ -130,7 +133,8 @@ button:focus {
 	justify-self: left;
 }
 
-#results > div {
+#results > div,
+#guess-ui {
 	display: grid;
 	--min-size: 75px;
 	grid-template-columns: repeat(auto-fill, minmax(min(var(--min-size),100%),1fr));
@@ -145,7 +149,8 @@ button:focus {
 	margin-bottom: 5px;
 }
 
-.resultElement {
+.resultElement,
+.guessElement {
 	background-color: var(--typeColor);
 	color: var(--basicColor);
 	text-shadow: 1px 0 3px black;
@@ -154,6 +159,32 @@ button:focus {
 	border-radius: 2px;
 	text-align: center;
 	font-size: 1.1rem;
+}
+
+.resultElement.mystery {
+	background-color: dimgray;
+}
+
+.guessElement {
+	border-radius: 8px;
+	cursor: pointer;
+}
+
+#guess-prompt-wrapper {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+}
+
+#word-container > span {
+	background-color: var(--typeColor);
+	color: var(--basicColor);
+	text-shadow: 1px 0 3px black;
+	display: inline-block;
+	padding: 8px;
+	border-radius: 2px;
+	text-align: center;
+	margin-inline: 2px;
 }
 
 h2 {
@@ -170,19 +201,19 @@ h2 {
 	background-color: gray;
 	color: white;
 	text-shadow: 1px 0 3px black;
-	border: 3px solid gray;
 	border-radius: 20px;
 	
 	font-size: 1rem;
 	width: 6rem;
 	height: 2rem;
+	transition: linear 0.1s;
 }
 
 #mode-switch > button.selected {
 	background-color: white;
 	color: gray;
-	transition: linear 0.2s;
 	text-shadow: none;
+	border: 3px solid gray;
 }
 
 /* split the content in half with a medium screen */

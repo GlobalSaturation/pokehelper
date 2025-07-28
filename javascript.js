@@ -252,6 +252,10 @@ const types = {
 	},
 }
 
+function removeAll(identifier) {
+		document.querySelectorAll(identifier).forEach((e) => e.remove());
+}
+
 function addToQueue(btn, typeName) {
 	//if we've already added this type, remove it
 	if (typeQueue.includes(typeName)) {
@@ -364,6 +368,11 @@ function fillResultsPage(results) {
 			resultDiv.appendChild(elementToAttach);
 		});
 	}
+
+	//if guess mode is on, edit the promt to ask for the selected types
+	if (isGuessMode) {
+		createPromptTypes();
+	}
 }
 
 //create buttons of each available type
@@ -398,10 +407,14 @@ function resetCalc() {
 //initialize mode buttons
 const offenseBtn = document.querySelector("#offense");
 const defenseBtn = document.querySelector("#defense");
+
+//called at the beginning and whenever a mode button is pressed
 function modeChange(mode, newQueueMax) {
+	//determine which buttons we're referring to later based on the mode parameter
 	const btn = (mode === modes.DEFENSE) ? defenseBtn : offenseBtn;
 	const oppositeBtn = (mode === modes.DEFENSE) ? offenseBtn : defenseBtn;
 
+	//unselect any type buttons and refresh calcs when mode is changed
 	if (!btn.classList.contains("selected")) {
 		btn.classList.add("selected");
 		oppositeBtn.classList.remove("selected");
@@ -423,6 +436,77 @@ defenseBtn.addEventListener("click", () => {
 	modeChange(modes.DEFENSE, 2);
 });
 
+//when we update the results and are in guess mode, show what types are selected in the prompt
+function createPromptTypes() {
+	removeAll("#word-container > span");
+	const container = document.querySelector("#word-container");
+
+	//create a span element for the type/s, attach it to the container
+	//this is to have the flexbox wrapping work properly!
+	typeQueue.forEach((type) => {
+		const span = document.createElement("span");
+		span.innerText = type;
+		span.style.setProperty("--typeColor", types[type].color);
+		container.appendChild(span);
+	});
+}
+
+//this is called when the guess checkbox is clicked
+function handleGuessMode() {
+	//reveal or hide the types
+	const resultElements = document.querySelectorAll(".resultElement");
+	for (let resultElement of resultElements) {
+		if (isGuessMode) {
+			resultElement.classList.add("mystery");
+			resultElement.innerText = "?";
+		} else {
+			resultElement.classList.remove("mystery");
+			resultElement.innerText = resultElement.dataset.typeName;
+		}
+	}
+
+	if (isGuessMode) {
+		//create the guess ui
+		const guessDiv = document.querySelector("#guess-ui");
+
+		createPromptTypes();
+
+		for (let type in types ) {
+			const element = document.createElement("button");
+			document.querySelector("#guess-prompt-wrapper > h2").style.display = "block";
+			element.innerText = type;
+			//also set inner data to its type so that we can retrieve it for guess mode
+			element.dataset.typeName = type;
+			element.style.setProperty("--typeColor", types[type].color);
+			element.classList.add("guessElement");
+			guessDiv.appendChild(element);
+		}
+	} else {
+		//remove the guess ui
+		document.querySelector("#guess-prompt-wrapper > h2").style.display ="none";
+		removeAll("#word-container > span");
+		removeAll(".guessElement");
+	}
+}
+
+//initialize guess mode
+const guessCheckbox = document.querySelector("#guess-mode");
+guessCheckbox.addEventListener("click", () => {
+	if (guessCheckbox.checked) {
+		isGuessMode = true;
+	} else {
+		isGuessMode = false;
+	}
+	handleGuessMode();
+});
+
 //set defaults at the start
-createResultElements();
-modeChange(modes.DEFENSE, 2);
+function startUp() {
+	//don't display the guess prompt at the start
+	document.querySelector("#guess-prompt-wrapper > h2").style.display ="none";
+	createResultElements();
+	//call this to start page in defense mode, and to give us the blank results at the start
+	modeChange(modes.DEFENSE, 2);
+}
+
+startUp();
