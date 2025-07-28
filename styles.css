@@ -113,7 +113,8 @@ button:focus {
 	}
 }
 
-.typeBtn.selected {
+.typeBtn.selected,
+.guessElement.selected {
 	background-color: var(--basicColor);
 	color: var(--typeColor);
 	text-shadow: none;
@@ -155,10 +156,12 @@ button:focus {
 	color: var(--basicColor);
 	text-shadow: 1px 0 3px black;
 	display: inline-block;
-	padding: 8px;
+	height: 40px;
 	border-radius: 2px;
 	text-align: center;
+	align-content: center;
 	font-size: 1.1rem;
+	transition: linear 0.1s;
 }
 
 .resultElement.mystery {

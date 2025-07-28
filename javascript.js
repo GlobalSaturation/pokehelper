@@ -371,6 +371,9 @@ function fillResultsPage(results) {
 
 	//create or remove guess mode type prompts
 	togglePromptTypes();
+	if (isGuessMode) {
+		resetGuesses();
+	}
 }
 
 //create buttons of each available type
@@ -452,6 +455,28 @@ function togglePromptTypes() {
 	}
 }
 
+function resetGuesses() {
+	//reset guess buttons
+	document.querySelectorAll(".guessElement").forEach((e) => {
+		e.classList.remove("selected");
+	});
+	//reset result elements
+	document.querySelectorAll(".resultElement").forEach((e) => {
+		e.classList.add("mystery");
+		e.innerText = "?";
+	});
+}
+
+function revealGuess(btn, type) {
+	if (!btn.classList.contains("selected")) {
+		const resultElement = document.querySelector(`[data-type-name="${type}"]`);
+		btn.classList.add("selected");
+		//reveal the result element's true type
+		resultElement.classList.remove("mystery");
+		resultElement.innerText = resultElement.dataset.typeName;
+	}
+}
+
 //this is called when the guess checkbox is clicked
 function handleGuessMode() {
 	//reveal or hide the types
@@ -477,9 +502,10 @@ function handleGuessMode() {
 			document.querySelector("#guess-prompt-wrapper > h2").style.display = "block";
 			element.innerText = type;
 			//also set inner data to its type so that we can retrieve it for guess mode
-			element.dataset.typeName = type;
+			// element.dataset.typeName = type;
 			element.style.setProperty("--typeColor", types[type].color);
 			element.classList.add("guessElement");
+			element.addEventListener("click", (e) => revealGuess(e.currentTarget,type));
 			guessDiv.appendChild(element);
 		}
 	} else {
